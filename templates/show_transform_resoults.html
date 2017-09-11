@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load static %}
+
+{% block title %}Результаты Преобразования{% endblock %}
+{% block body %}
+    <h3 class="display-3">Результаты преобразования {{ form.channel.value }} канала файла: "{{ form.file_name.value }}" </h3>
+    <img src="{{ form.initial.standart_cardio.url }}">
+        <img src="{{ form.initial.wavelet.url }}">{% endblock %}

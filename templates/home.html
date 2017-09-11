@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Загрузка Файла{% endblock %}
+{% block head %}
+    <script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+    <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+{% endblock %}
+{% block body %}
+    <div class="jumbotron" style="margin-bottom: 0">
+        <div class="container">
+            <div class="jumbotron">
+
+                <form id="fileLoaddDropzone" name="file_load_form" method="POST" action="{% url 'home' %}"
+                      class="dropzone">
+                    {% csrf_token %}
+                    <input type="hidden" name='channel' value="1" id="channel"/>
+                    <input type="hidden" name='wavelet' value="1" id="wavelet"/>
+                </form>
+
+                <div style="margin: 15px;">
+                    <label for="channel">Выберите Канал</label>
+                    <select id="channel_select_id" name="channel" class="selectpicker">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                    <select id="channel_wavelet_id" name="wavelet_select" class="selectpicker">
+                        <option value="1">Morlet</option>
+                        <option value="2">Paul</option>
+                        <option value="3">DOG</option>
+                        <option value="4">Ricker</option>
+                        <option value="5">Marr</option>
+                        <option value="6">Mexican hat</option>
+
+                    </select>
+                    <button id="submit_button_id" type="submit" name="save" class="btn btn-primary">Выполнить
+                        преобразование
+                    </button>
+                </div>
+            </div>
+            <script>
+                Dropzone.options.fileLoaddDropzone = {
+                    maxFiles: 1,
+                    timeout: 0,
+                    url: '{% url 'home' %}',
+                    autoProcessQueue: false,
+                    dictDefaultMessage: 'Переместите свой файл сюда',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    init: function () {
+                        var Dropzone = this;
+                        $("#submit_button_id").on('click', function (e) {
+                            e.preventDefault();
+                            Dropzone.processQueue();
+                        });
+                    },
+                    success: function (file, response) {
+                        console.log('Done');
+                        var parser = document.createElement('a');
+                        parser.href = document.URL;
+                        window.location = parser.origin + response;
+                    }
+                };
+
+                $('#channel_select_id').change(function () {
+                    $('#channel').val($('#channel_select_id').val());
+                });
+                $('#channel_wavelet_id').change(function () {
+                    $('#wavelet').val($('#channel_wavelet_id').val());
+                });
+            </script>
+        </div>
+    </div>
+
+{% endblock %}
